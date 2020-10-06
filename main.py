@@ -1,14 +1,22 @@
-import os
-import time
 import speech_recognition as sr
 import pyttsx3
 import requests
-import datetime
+from pygame import mixer
+from yandex_music.client import Client
 
 
+mixer.init()
+mail, password = input().split()
+client = Client.from_credentials(mail, password)
+for i in range(len(list(client.users_likes_tracks()))):
+    client.users_likes_tracks()[i].track.download(str(i) + '.mp3')
+number = 0
+music_flag = 0
+music_pause_flag = 0
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
 city_id = 0
+volume = 0.3
 appid = "86bb2596969f92098deda13aa115e059"
 
 
@@ -26,7 +34,7 @@ def weather(city):
 
 def command():
     r = sr.Recognizer()
-    with sr.Microphone() as source:
+    with sr.Microphone(device_index=0) as source:
         r.pause_threshold = 1
         r.adjust_for_ambient_noise(source)
         audio = r.listen(source)
@@ -44,17 +52,36 @@ def talk(string):
 
 
 while True:
-    cmd = command()
-    talk(cmd)
+    cmd = command().lower()
+    print(cmd)
     if 'погода' in cmd:
         talk('Уточните город, который вас интересует')
-        cmd = command()
+        cmd = command().lower()
         wth = weather(cmd)
         if wth:
             talk('Сейчас в городе ' + cmd + wth[0] + 'градусов по цельсию,' + wth[1])
         else:
             talk('Я не расслышал название города')
             talk('Повторите пожалуйста')
+    elif 'включи музыку' in cmd and music_flag == 0:
+        mixer.music.load(str(number) + '.mp3')
+        mixer.music.play()
+        music_flag = 1
+    elif 'прекрати играть' in cmd or 'пауз' in cmd and music_flag:
+        mixer.music.pause()
+        music_pause_flag = 1
+    elif 'продолжи' in cmd and music_pause_flag == 1:
+        mixer.music.unpause()
+        music_pause_flag = 0
+    elif 'далее' in cmd or 'дальше' in cmd or 'следующ' in cmd:
+        number += 1
+        mixer.music.load(str(number) + '.mp3')
+        mixer.music.play()
+    elif 'предыдущ' in cmd and number:
+        number -= 1
+        mixer.music.load(str(number) + '.mp3')
+        mixer.music.play()
     elif cmd == 'пока':
         talk('Приятно было поболтать')
         exit()
+
