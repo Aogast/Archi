@@ -85,7 +85,5 @@ while True:
     elif cmd == 'пока':
         talk('Приятно было поболтать')
         exit()
-    mixer.music.set_volume(100)
-    volume -= 10
 
 
