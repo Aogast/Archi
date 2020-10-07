@@ -1,22 +1,21 @@
 import speech_recognition as sr
 import pyttsx3
 import requests
-# from pygame import mixer
+from pygame import mixer
 from yandex_music.client import Client
 
 
-# mixer.init()
-# mail, password = input().split()
-# client = Client.from_credentials(mail, password)
-# for i in range(len(list(client.users_likes_tracks()))):
-#     client.users_likes_tracks()[i].track.download(str(i) + '.mp3')
-# number = 0
-# music_flag = 0
-# music_pause_flag = 0
+mixer.init()
+mail, password = input().split()
+client = Client.from_credentials(mail, password)
+for i in range(len(list(client.users_likes_tracks() ))):
+    client.users_likes_tracks()[i].track.download(str(i) + '.mp3')
+number = 0
+music_flag = 0
+music_pause_flag = 0
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
 city_id = 0
-# volume = 0.3
 appid = "86bb2596969f92098deda13aa115e059"
 
 
@@ -63,24 +62,24 @@ while True:
         else:
             talk('Я не расслышал название города')
             talk('Повторите пожалуйста')
-    # elif 'включи музыку' in cmd and music_flag == 0:
-    #     mixer.music.load(str(number) + '.mp3')
-    #     mixer.music.play()
-    #     music_flag = 1
-    # elif 'прекрати играть' in cmd or 'пауз' in cmd and music_flag:
-    #     mixer.music.pause()
-    #     music_pause_flag = 1
-    # elif 'продолжи' in cmd and music_pause_flag == 1:
-    #     mixer.music.unpause()
-    #     music_pause_flag = 0
-    # elif 'далее' in cmd or 'дальше' in cmd or 'следующ' in cmd:
-    #     number += 1
-    #     mixer.music.load(str(number) + '.mp3')
-    #     mixer.music.play()
-    # elif 'предыдущ' in cmd and number:
-    #     number -= 1
-    #     mixer.music.load(str(number) + '.mp3')
-    #     mixer.music.play()
+    elif 'включи музыку' in cmd and music_flag == 0:
+        mixer.music.load(str(number) + '.mp3')
+        mixer.music.play()
+        music_flag = 1
+    elif 'прекрати играть' in cmd or 'пауз' in cmd and music_flag:
+        mixer.music.pause()
+        music_pause_flag = 1
+    elif 'продолжи' in cmd and music_pause_flag == 1:
+        mixer.music.unpause()
+        music_pause_flag = 0
+    elif 'далее' in cmd or 'дальше' in cmd or 'следующ' in cmd:
+        number += 1
+        mixer.music.load(str(number) + '.mp3')
+        mixer.music.play()
+    elif 'предыдущ' in cmd and number:
+        number -= 1
+        mixer.music.load(str(number) + '.mp3')
+        mixer.music.play()
     elif cmd == 'пока':
         talk('Приятно было поболтать')
         exit()
