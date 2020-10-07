@@ -8,13 +8,14 @@ from yandex_music.client import Client
 mixer.init()
 mail, password = input().split()
 client = Client.from_credentials(mail, password)
-for i in range(len(list(client.users_likes_tracks() ))):
+for i in range(len(list(client.users_likes_tracks()))):
     client.users_likes_tracks()[i].track.download(str(i) + '.mp3')
 number = 0
 music_flag = 0
 music_pause_flag = 0
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
+volume = 0.1
 city_id = 0
 appid = "86bb2596969f92098deda13aa115e059"
 
@@ -22,11 +23,12 @@ appid = "86bb2596969f92098deda13aa115e059"
 def weather(city):
     try:
         res = requests.get("http://api.openweathermap.org/data/2.5/weather",
-                     params={'q': city, 'units': 'metric', 'lang': 'ru', 'APPID': appid})
+                           params={'q': city, 'units': 'metric',
+                                   'lang': 'ru', 'APPID': appid})
         data = res.json()
         return str(data['main']['temp']), data['weather'][0]['description']
 
-    except Exception as e:
+    except Exception:
         print(1)
         return None
 
@@ -36,7 +38,7 @@ def command():
     with sr.Microphone(device_index=0) as source:
         r.pause_threshold = 1
         r.adjust_for_ambient_noise(source)
-        audio = r.listen(source)
+        audio = r.listen(source, phrase_time_limit=10)
     try:
         query = r.recognize_google(audio, language='ru-RU')
     except sr.UnknownValueError:
@@ -54,7 +56,7 @@ while True:
     cmd = command().lower()
     print(cmd)
     if 'погода' in cmd:
-        talk('Уточните город, который вас интересует')
+        talk('Уточн ите город, который вас интересует')
         cmd = command().lower()
         wth = weather(cmd)
         if wth:
@@ -83,4 +85,7 @@ while True:
     elif cmd == 'пока':
         talk('Приятно было поболтать')
         exit()
+    mixer.music.set_volume(100)
+    volume -= 10
+
 
