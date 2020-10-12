@@ -34,6 +34,9 @@ city_id = 0
 appid = "86bb2596969f92098deda13aa115e059"
 
 
+# Kola is stupid
+
+
 def weather(city):
     try:
         res = requests.get("http://api.openweathermap.org/data/2.5/weather",
@@ -45,7 +48,6 @@ def weather(city):
     except Exception:
         print(1)
         return None
-
 
 def command():
     r = sr.Recognizer()
